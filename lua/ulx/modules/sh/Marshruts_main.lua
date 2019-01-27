@@ -4,6 +4,11 @@ for i = 1, 999 do
 	MarshrutsTBL[i].curpos = 0
 end
 --PrintTable(MarshrutsTBL)
+if SERVER then
+	for k,v in pairs(player.GetAll()) do
+		v:SendLua([[initRasp(0)]])
+	end	
+end
 
 function ulx.nextlist( calling_ply,int)
 local variable = ""
@@ -11,26 +16,25 @@ local variable = ""
 	local MarshrutCurPosCheck = true
 			for k1,v1 in pairs(MarshrutsTBL[int]) do
 				if type(v1) == "number" then continue end
-				if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end
-				if MarshrutsTBL[int].curpos == table.Count(MarshrutsUrls[int]) then 
-					if MarshrutCurPosCheck then
+				--if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end				
+				if MarshrutCurPosCheck then
+					if MarshrutsTBL[int].curpos == table.Count(MarshrutsUrls[int]) then 
 						MarshrutsTBL[int].curpos = 0
-						MarshrutCurPosCheck = false
+					else  
+						MarshrutsTBL[int].curpos = MarshrutsTBL[int].curpos + 1
 					end
-						v1:SendLua([[SetCurList(]]..(MarshrutsTBL[int].curpos)..[[)]])
-						ulx.fancyLogAdmin(calling_ply, "#A #s маршрутный лист у игрока #T", "забрал", v1) 
-					return 
+					MarshrutCurPosCheck = false
 				end
-				if MarshrutsTBL[int].curpos == 0 then 
-					variable = "первый"
-				elseif MarshrutsTBL[int].curpos == table.Count(MarshrutsUrls[int]) - 1 then
-					variable = "последний"
-				else
-					variable = "следующий"
-				end
-				ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T", variable, v1) 
-				if MarshrutCurPosCheck then MarshrutsTBL[int].curpos = MarshrutsTBL[int].curpos + 1 MarshrutCurPosCheck = false end
 				v1:SendLua([[SetCurList(]]..(MarshrutsTBL[int].curpos)..[[)]])
+				if MarshrutsTBL[int].curpos == 0 then 
+					ulx.fancyLogAdmin(calling_ply, "#A #s маршрутный лист игроку #T", "забрал", v1) 
+				elseif MarshrutsTBL[int].curpos == 1 then 
+					ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T", "первый", v1) 
+				elseif MarshrutsTBL[int].curpos == table.Count(MarshrutsUrls[int]) then
+					ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T","последний", v1) 
+				else
+					ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T","следующий", v1) 
+				end
 			end
 end
 local nextlist = ulx.command( "Metrostroi", "ulx next", ulx.nextlist, "!next",true )
@@ -41,26 +45,28 @@ nextlist:help( "Показать следующий маршрутный лис�
 
 function ulx.prevlist( calling_ply,int)
 	if table.Count(MarshrutsUrls[int]) == 0 then return end
-			local MarshrutCurPosCheck = true
+	local MarshrutCurPosCheck = true
 			for k1,v1 in pairs(MarshrutsTBL[int]) do
 				if type(v1) == "number" then continue end
-				if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end
-				if MarshrutsTBL[int].curpos == 0 then 
-					if MarshrutCurPosCheck then
+				--if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end				
+				if MarshrutCurPosCheck then
+					if MarshrutsTBL[int].curpos == 0 then 
 						MarshrutsTBL[int].curpos = table.Count(MarshrutsUrls[int])
-						MarshrutCurPosCheck = false
+					else  
+						MarshrutsTBL[int].curpos = MarshrutsTBL[int].curpos - 1
 					end
-						v1:SendLua([[SetCurList(]]..(MarshrutsTBL[int].curpos)..[[)]])
-						ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T", "последний", v1) 
-					return 
+					MarshrutCurPosCheck = false
 				end
-				if MarshrutsTBL[int].curpos - 1 == 0 then 
-					ulx.fancyLogAdmin(calling_ply, "#A #s маршрутный лист у игрока #T", "забрал", v1) 
-				else
-					ulx.fancyLogAdmin(calling_ply, "#A выдал предыдущий маршрутный лист игроку #T", v1) 
-				end
-				if MarshrutCurPosCheck then MarshrutsTBL[int].curpos = MarshrutsTBL[int].curpos - 1 MarshrutCurPosCheck = false end
 				v1:SendLua([[SetCurList(]]..(MarshrutsTBL[int].curpos)..[[)]])
+				if MarshrutsTBL[int].curpos == 0 then 
+					ulx.fancyLogAdmin(calling_ply, "#A #s маршрутный лист игроку #T", "забрал", v1) 
+				elseif MarshrutsTBL[int].curpos == 1 then 
+					ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T", "первый", v1) 
+				elseif MarshrutsTBL[int].curpos == table.Count(MarshrutsUrls[int]) then
+					ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T","последний", v1) 
+				else
+					ulx.fancyLogAdmin(calling_ply, "#A выдал #s маршрутный лист игроку #T","предыдущий", v1) 
+				end
 			end
 end
 local prevlist = ulx.command( "Metrostroi", "ulx prev", ulx.prevlist, "!prev",true )
