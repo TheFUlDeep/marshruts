@@ -1,5 +1,16 @@
 local urltbl = {}
 local currentlist = 0
+local marhsh = 0
+
+net.Receive( "MarshrutsUrls", function()
+	local Len = net.ReadUInt(32)
+	urltbl = util.JSONToTable(util.Decompress(net.ReadData(Len)))
+	if not urltbl then return end
+	for k,v in pairs(urltbl) do
+		draw.WebImage(v, 0, 0, 0, 0, nil, 0,nil)
+	end
+	--PrintTable(urltbl)
+end)
 
 function SetCurList(int)	
 	currentlist = int
@@ -12,8 +23,10 @@ function initRasp(int)
 		file.Delete(path..v)
 	end
 	currentlist = 0
+	marhsh = 0
 	if int == 0 then return end
-	urltbl = MarshrutsUrls[int]
+	marhsh = int
+	if not urltbl then return end
 	local i = 0
 	for k,v in pairs(urltbl) do
 		draw.WebImage(urltbl[k], 0/2, 0/2, 0, 0, nil, 0,nil)
@@ -25,10 +38,12 @@ function initRasp(int)
 	end
 end
 
-local width = 550/1.7
-local height = 800/1.7
 hook.Add("HUDPaint", "WebImage", function()
+if not urltbl then return end
+local width = 749/3
+local height = 1384/3
 if currentlist < 1 then return end
+--if marhsh == 22 then width = 749/3 height = 1195/3 end
 draw.WebImage(urltbl[currentlist], width/2, height/2, width, height, nil, 0,nil)
 end)
 --ScrH()
