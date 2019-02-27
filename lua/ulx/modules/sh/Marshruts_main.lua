@@ -17,6 +17,7 @@ if SERVER then
 		if not str or str == "" or str:find(" ") then ULib.tsayError( ply, "Invalid link", true ) return end
 		if not MarshrutsUrls[int] then MarshrutsUrls[int] = {} end
 		MarshrutsUrls[int][table.Count(MarshrutsUrls[int])+1] = str
+		PrintTable(MarshrutsUrls)
 		file.Write("MarshrutsUrls.txt",util.TableToJSON(MarshrutsUrls))
 		ulx.fancyLogAdmin(ply, "#A добавил маршрутный лист номер #i для маршрута #i",table.Count(MarshrutsUrls[int]),int) 
 		
@@ -65,7 +66,7 @@ if SERVER then
 		local MarshrutCurPosCheck = true
 		for k1,v1 in pairs(MarshrutsTBL[int]) do
 			if type(v1) == "number" then continue end
-			if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end				
+			--if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end				
 			if MarshrutCurPosCheck then
 				if MarshrutsTBL[int].curpos == table.Count(MarshrutsUrls[int]) then 
 					MarshrutsTBL[int].curpos = 0
@@ -98,7 +99,7 @@ if SERVER then
 		local MarshrutCurPosCheck = true
 			for k1,v1 in pairs(MarshrutsTBL[int]) do
 				if type(v1) == "number" then continue end
-				if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end				
+				--if calling_ply:GetPos():DistToSqr(v1:GetPos()) > 500*500 or calling_ply == v1 then continue end				
 				if MarshrutCurPosCheck then
 					if MarshrutsTBL[int].curpos == 0 then 
 						MarshrutsTBL[int].curpos = table.Count(MarshrutsUrls[int])

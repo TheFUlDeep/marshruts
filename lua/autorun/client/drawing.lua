@@ -6,9 +6,9 @@ net.Receive( "MarshrutsUrls", function()
 	local Len = net.ReadUInt(32)
 	urltbl = util.JSONToTable(util.Decompress(net.ReadData(Len)))
 	if not urltbl then return end
-	for k,v in pairs(urltbl) do
+	--[[for k,v in pairs(urltbl) do
 		draw.WebImage(v, 0, 0, 0, 0, nil, 0,nil)	
-	end
+	end]]
 	--PrintTable(urltbl)
 end)
 
@@ -44,7 +44,7 @@ local width = 693/1.2
 local height = 454/1.2
 local lastlist = currentlist
 hook.Add("HUDPaint", "WebImage", function()
-if not urltbl or not urltbl[currentlist] or currentlist < 1 then return end
+if not urltbl or not urltbl[currentlist] or currentlist < 1 then lastlist = currentlist return end
 if lastlist ~= currentlist then
 	lastlist = currentlist
 	local w,h = GetPNGSize("downloaded_assets/"..util.CRC(urltbl[currentlist])..".png")
@@ -54,7 +54,7 @@ if lastlist ~= currentlist then
 	end
 end
 --if marhsh == 22 then width = 749/3 height = 1195/3 end
-draw.WebImage(urltbl[currentlist], width/2, height/2, width/k, height/k, nil, 0,nil)
+draw.WebImage(urltbl[currentlist], width/k/2, height/k/2, width/k, height/k, nil, 0,nil)
 end)
 --ScrH()
 --ScrW()
